@@ -36,7 +36,7 @@ def main():
     agent = DQNAgent(state_size, action_size, batch_size=64, gamma=0.99, epsilon=1.0, eps_decay=0.995, eps_min=0.01,
                      target_update=10, memory_capacity=10000, device=device)
 
-    num_episodes = 300000
+    num_episodes = 100000
     rewards = []
 
     for i_episode in tqdm(range(num_episodes), desc="Training Progress"):
@@ -107,31 +107,13 @@ def test_model():
     ])
 
     env = MazeEnv(maze_array)
-    state_size = maze_array.size
-    action_size = 4
-    agent = DQNAgent(state_size, action_size, batch_size=64, gamma=0.99, epsilon=1.0, eps_decay=0.995, eps_min=0.01,
-                     target_update=10, memory_capacity=10000, device=device)
-    agent.load("dqn_model.pth")
 
-    state = env.reset().flatten()
-    state = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
-    total_reward = 0
-    steps = 0
+    app = QApplication(sys.argv)
+    main_window = MainWindow(env, isTest=True)
+    main_window.test()
+    sys.exit(app.exec_())
 
-    while True:
-        env.render()
-        action = agent.policy_net(state).max(1)[1].view(1, 1)
-        next_state, reward, done, _ = env.step(action.item())
-        next_state = torch.tensor(next_state.flatten(), dtype=torch.float32).unsqueeze(0).to(device)
-        total_reward += reward
-        steps += 1
-
-        state = next_state
-
-        if done:
-            print(f"Goal reached in {steps} steps with total reward {total_reward}")
-            break
 
 if __name__ == '__main__':
-    main()
-    # test_model()
+    # main()
+    test_model()

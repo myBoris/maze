@@ -1,9 +1,12 @@
 import random
 import sys
 import numpy as np
+import torch
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtGui import QPainter, QBrush
 from PyQt5.QtCore import Qt, QTimer
+
+from agent.net import QNetwork
 
 
 class MazeEnv:
@@ -12,6 +15,9 @@ class MazeEnv:
         self.start_pos = tuple(np.argwhere(self.maze == 8)[0])
         self.goal_pos = tuple(np.argwhere(self.maze == 9)[0])
         self.current_pos = self.start_pos
+
+        self.state_size = maze_array.size
+        self.action_size = 4
 
     def reset(self):
         self.current_pos = self.start_pos
@@ -83,13 +89,22 @@ class MazeWidget(QWidget):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, env):
+    def __init__(self, env, isTest=False):
         super().__init__()
         self.env = env
         self.initUI()
-        # self.random_move_timer = QTimer(self)
-        # self.random_move_timer.timeout.connect(self.random_move)
-        # self.random_move_timer.start(500)  # 每500毫秒执行一次随机移动
+        self.isTest = isTest
+
+        if isTest:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            self.agent = QNetwork(env.state_size, env.action_size).to(self.device)
+            self.agent.load_state_dict(torch.load("dqn_model.pth"))
+            self.agent.eval()
+            self.current_state = env.reset().flatten()
+            self.current_state = torch.tensor( self.current_state, dtype=torch.float32).unsqueeze(0).to(self.device)
+            self.random_move_timer = QTimer(self)
+            self.random_move_timer.timeout.connect(self.test)
+            self.random_move_timer.start(500)  # 每500毫秒执行一次随机移动
 
     def initUI(self):
         self.setWindowTitle('迷宫环境')
@@ -123,6 +138,16 @@ class MainWindow(QMainWindow):
         if done:
             print("Goal reached!")
             self.env.reset()
+
+    def test(self):
+        if self.isTest:
+            action = self.agent(self.current_state).max(1)[1].view(1, 1)
+            obs, reward, done, info = self.env.step(action)
+            self.current_state = torch.tensor(obs.flatten(), dtype=torch.float32).unsqueeze(0).to(self.device)
+            self.maze_widget.update()
+            if done:
+                print("Goal reached!")
+                self.env.reset()
 
 
 def main():

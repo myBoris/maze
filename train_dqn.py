@@ -86,7 +86,7 @@ def main():
     agent.save("dqn_model.pth")
 
     app = QApplication(sys.argv)
-    main_window = MainWindow(env, agent)
+    main_window = MainWindow(env)
     sys.exit(app.exec_())
 
 def test_model():

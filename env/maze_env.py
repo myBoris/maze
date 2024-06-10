@@ -83,10 +83,9 @@ class MazeWidget(QWidget):
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, env, agent):
+    def __init__(self, env):
         super().__init__()
         self.env = env
-        self.agent = agent
         self.initUI()
         # self.random_move_timer = QTimer(self)
         # self.random_move_timer.timeout.connect(self.random_move)

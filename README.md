@@ -1,6 +1,6 @@
 # 训练DQN玩迷宫，后续会更新其他网络来玩迷宫
-## 运行效果
-<div><video controls src="https://github.com/myBoris/maze/blob/main/imgs/%E6%B5%8B%E8%AF%95.mp4" muted="false"></video></div>
+## 运行效果<br>
++ <div><video controls src="https://github.com/myBoris/maze/blob/main/imgs/%E6%B5%8B%E8%AF%95.mp4" muted="false"></video></div>
 
 ## 1.环境配置教程
 + 1.使用anaconda创建一个环境 (conda create --name maze python=3.10)

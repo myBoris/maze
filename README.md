@@ -10,11 +10,9 @@
 
 
 ## 2.使用教程<br>
-#### 直接运行[train_dqn.py](train_dqn.py)进行训练
-#### [train_dqn.py](train_dqn.py) 这个文件最下面的有如下代码<br>
-    `if __name__ == '__main__':
-        main()　#训练用的方法
-        # test_model() #测试用的方法，这里是测试训练好的模型，测试时打开`  
++ 直接运行[train_dqn.py](train_dqn.py)进行训练
++ [train_dqn.py](train_dqn.py) 这个文件最下面的有如下代码<br>
++ + `if __name__ == '__main__': ` <br>` main() 　#训练用的方法 ` <br>` # test_model() #测试用的方法，这里是测试训练好的模型，测试时打开`  
 
 ## 3.环境截图<br>
 ![maze_env.png](imgs%2Fmaze_env.png)
